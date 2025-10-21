@@ -1,0 +1,37 @@
+# Genel
+.DS_Store
+node_modules/
+.env
+*.log
+
+# Frontend (React)
+frontend/node_modules/
+frontend/build/
+frontend/dist/
+frontend/.env
+frontend/.DS_Store
+frontend/.cache/
+frontend/public/*.jpeg
+frontend/public/*.png
+
+# Backend (C++/CMake)
+backend/build/
+backend/bin/
+backend/CMakeFiles/
+backend/CMakeCache.txt
+backend/cmake_install.cmake
+backend/Makefile
+backend/CMakeTmp/
+backend/tests/build/
+backend/tests/bin/
+backend/tests/CMakeFiles/
+backend/tests/CMakeCache.txt
+backend/tests/cmake_install.cmake
+backend/tests/Makefile
+backend/tests/CMakeTmp/
+
+# IDE ve sistem dosyaları
+.vscode/
+.idea/
+*.swp
+*.swo
