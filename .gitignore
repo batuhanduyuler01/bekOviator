@@ -12,7 +12,7 @@ frontend/.env
 frontend/.DS_Store
 frontend/.cache/
 frontend/public/*.jpeg
-frontend/public/*.png
+#frontend/public/*.png
 
 # Backend (C++/CMake)
 backend/build/
