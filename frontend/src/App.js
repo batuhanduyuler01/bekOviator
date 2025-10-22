@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import { gameAPI } from './gameAPI';
 import ActiveBets from './ActiveBets';
+import AdminPanel from './AdminPanel';
 
 // 🎯 REACT + BACKEND ENTEGRASYONU
 function App() {
@@ -49,11 +50,19 @@ function App() {
   const [notifications, setNotifications] = useState([]);
   const [beerBottles, setBeerBottles] = useState([]); // 🍺 Düşen bira şişeleri
   const [helicopterPosition, setHelicopterPosition] = useState({ left: 10, bottom: 20 }); // 🚁 Helikopter pozisyonu
+  const [showAdminPanel, setShowAdminPanel] = useState(false); // 🔧 Admin panel
   const [bekoOverlayType, setBekoOverlayType] = useState(null); // 🇹🇷 Beko overlay tipi: 'istanbul', 'irak' veya null
 
   // 🔄 BACKEND BAĞLANTISI - Her 100ms'de oyun durumunu güncelle
   useEffect(() => {
     console.log('🎮 Crash Game başlatıldı!');
+
+    // 🔧 Admin panel kontrolü
+    const checkAdminHash = () => {
+      setShowAdminPanel(window.location.hash === '#admin');
+    };
+    checkAdminHash();
+    window.addEventListener('hashchange', checkAdminHash);
     
     const fetchGameStatus = async () => {
       const status = await gameAPI.getGameStatus();
@@ -389,6 +398,9 @@ function App() {
               </div>
             </div>
           )}
+
+          {/* Admin Panel - Gizli */}
+          {showAdminPanel && <AdminPanel />}
 
           {/* Aktif Bahisler - Her zaman göster */}
           <ActiveBets round={gameState.round} />

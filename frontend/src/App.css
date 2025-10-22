@@ -667,3 +667,72 @@ body {
   color: var(--success-color);
   font-weight: bold;
 }
+
+/* 🔧 ADMIN PANEL */
+.admin-panel {
+  background: var(--card-bg);
+  border-radius: 15px;
+  padding: 1.5rem;
+  border: 2px solid var(--danger-color);
+  margin-bottom: 1.5rem;
+}
+
+.admin-panel h3 {
+  color: var(--danger-color);
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.admin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.admin-form input {
+  padding: 0.8rem;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--dark-bg);
+  color: var(--text-light);
+  font-size: 1rem;
+}
+
+.admin-form input:focus {
+  outline: none;
+  border-color: var(--danger-color);
+}
+
+.admin-form button {
+  padding: 1rem;
+  background: var(--danger-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.admin-form button:hover {
+  background: #D32F2F;
+  transform: translateY(-2px);
+}
+
+.admin-message {
+  margin-top: 1rem;
+  padding: 0.8rem;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
+.admin-message.success {
+  background: var(--success-color);
+  color: white;
+}
+
+.admin-message.error {
+  background: var(--error-color);
+  color: white;
+}

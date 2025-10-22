@@ -122,7 +122,7 @@ class GameAPI {
     return this.playerId;
   }
 
-  // � GET: Aktif bahisleri al
+  // 🎯 GET: Aktif bahisleri al
   async getActiveBets() {
     try {
       const response = await fetch(`${this.baseURL}/game/active-bets`);
@@ -130,6 +130,26 @@ class GameAPI {
     } catch (error) {
       console.error('Get active bets error:', error);
       return [];
+    }
+  }
+
+  // 💳 POST: Bakiye yükle (Admin)
+  async loadBalance(playerName, amount) {
+    try {
+      const response = await fetch(`${this.baseURL}/game/load-balance`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          player_name: playerName,
+          amount: amount
+        })
+      });
+      return await response.json();
+    } catch (error) {
+      console.error('Load balance error:', error);
+      return { success: false, error: error.message };
     }
   }
 }
