@@ -152,6 +152,17 @@ class GameAPI {
       return { success: false, error: error.message };
     }
   }
+
+  // 📈 GET: Eski crash pointlerini al
+  async getOldCrashPoints() {
+    try {
+      const response = await fetch(`${this.baseURL}/game/old-crash-points`);
+      return await response.json();
+    } catch (error) {
+      console.error('Get old crash points error:', error);
+      return [];
+    }
+  }
 }
 
 // 🌟 Singleton pattern - Tek API instance

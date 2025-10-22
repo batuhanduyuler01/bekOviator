@@ -736,3 +736,34 @@ body {
   background: var(--error-color);
   color: white;
 }
+
+/* 📈 ESKİ CRASH POINTLERİ */
+.old-crash-points {
+  background: rgba(0, 0, 0, 0.8);
+  padding: 0.5rem 2rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.crash-point {
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 0.9rem;
+  color: white;
+}
+
+.crash-point.red {
+  background-color: #F44336; /* Kırmızı */
+}
+
+.crash-point.blue {
+  background-color: #2196F3; /* Mavi */
+}
+
+.crash-point.green {
+  background-color: #4CAF50; /* Yeşil */
+}

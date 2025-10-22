@@ -52,6 +52,7 @@ function App() {
   const [helicopterPosition, setHelicopterPosition] = useState({ left: 10, bottom: 20 }); // 🚁 Helikopter pozisyonu
   const [showAdminPanel, setShowAdminPanel] = useState(false); // 🔧 Admin panel
   const [bekoOverlayType, setBekoOverlayType] = useState(null); // 🇹🇷 Beko overlay tipi: 'istanbul', 'irak' veya null
+  const [oldCrashPoints, setOldCrashPoints] = useState([]); // 📈 Eski crash pointleri
 
   // 🔄 BACKEND BAĞLANTISI - Her 100ms'de oyun durumunu güncelle
   useEffect(() => {
@@ -98,6 +99,12 @@ function App() {
         }
         
         setGameState(status);
+
+        // 📈 Eski crash pointlerini çek
+        const oldPoints = await gameAPI.getOldCrashPoints();
+        if (oldPoints) {
+          setOldCrashPoints(oldPoints);
+        }
       }
     };
 
@@ -243,6 +250,21 @@ function App() {
           </div>
         </div>
       )}
+
+      {/* 📈 ESKİ CRASH POINTLERİ */}
+      <div className="old-crash-points">
+        {oldCrashPoints.slice().reverse().map((point, index) => {
+          let colorClass = '';
+          if (point >= 0 && point < 3) colorClass = 'red';
+          else if (point >= 3 && point < 6) colorClass = 'blue';
+          else if (point >= 6 && point <= 10) colorClass = 'green';
+          return (
+            <span key={index} className={`crash-point ${colorClass}`}>
+              {point.toFixed(2)}x
+            </span>
+          );
+        })}
+      </div>
 
       <header className="game-header">
         <h1>✈️ bekOviator</h1>
