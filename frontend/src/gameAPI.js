@@ -19,7 +19,7 @@ class GameAPI {
     }
   }
   constructor() {
-    this.baseURL = 'http://localhost:8080';
+    this.baseURL = 'http://localhost:5050';
     this.playerId = this.generatePlayerId();
   }
 

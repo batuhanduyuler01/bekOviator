@@ -23,13 +23,13 @@ int main() {
     signal(SIGINT, signal_handler);
     
     try {
-        // Server'ı localhost:8080'de başlat
-        Address address(Ipv4::any(), Port(8080));
+        // Server'ı localhost:5050'de başlat
+        Address address(Ipv4::any(), Port(5050));
         server_instance = std::make_unique<CrashGameServer>(address);
         
         std::cout << "✅ Server hazır!" << std::endl;
         std::cout << "🌐 Frontend: http://localhost:3000" << std::endl;
-        std::cout << "🔗 API: http://localhost:8080" << std::endl;
+        std::cout << "🔗 API: http://localhost:5050" << std::endl;
         std::cout << "\n📋 Endpoints:" << std::endl;
         std::cout << "  GET  /api/game/status      - Oyun durumu" << std::endl;
         std::cout << "  POST /api/game/join        - Oyuna katıl" << std::endl;
