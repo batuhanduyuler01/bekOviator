@@ -14,9 +14,12 @@ function App() {
       if (ulke === 'türkiye') {
         addNotification('Oldu! Beko yanımıza döndü.', 'success');
         setBekoOverlayType('istanbul');
-      } else if (ulke === 'kuzey irak' || ulke === 'fildişi sahilleri') {
+      } else if (ulke === 'kuzey irak') {
         addNotification(`Hayır! Beko burada çalışmaya başladı: ${result.data.ulke}`, 'error');
         setBekoOverlayType('irak');
+      } else if (ulke === 'fildisi sahilleri') {
+        addNotification(`Hayır! Beko burada çalışmaya başladı: ${result.data.ulke}`, 'error');
+        setBekoOverlayType('fildisi');
       } else {
         addNotification(`Hayır! Beko burada çalışmaya başladı: ${result.data.ulke}`, 'error');
       }
@@ -51,7 +54,7 @@ function App() {
   const [beerBottles, setBeerBottles] = useState([]); // 🍺 Düşen bira şişeleri
   const [helicopterPosition, setHelicopterPosition] = useState({ left: 10, bottom: 20 }); // 🚁 Helikopter pozisyonu
   const [showAdminPanel, setShowAdminPanel] = useState(false); // 🔧 Admin panel
-  const [bekoOverlayType, setBekoOverlayType] = useState(null); // 🇹🇷 Beko overlay tipi: 'istanbul', 'irak' veya null
+  const [bekoOverlayType, setBekoOverlayType] = useState(null); // 🇹🇷 Beko overlay tipi: 'istanbul', 'irak', 'fildisi sahilleri' veya null
   const [oldCrashPoints, setOldCrashPoints] = useState([]); // 📈 Eski crash pointleri
 
   // 🔄 BACKEND BAĞLANTISI - Her 100ms'de oyun durumunu güncelle
@@ -237,14 +240,20 @@ function App() {
         <div className="beko-overlay" onClick={() => setBekoOverlayType(null)}>
           <div className="beko-content">
             <img 
-              src={bekoOverlayType === 'istanbul' ? '/beko_istanbul.png' : '/beko_irak.png'} 
-              alt={`Beko ${bekoOverlayType === 'istanbul' ? 'İstanbul' : 'Irak'}`} 
+              src={
+                bekoOverlayType === 'istanbul' ? '/beko_istanbul.png' : 
+                bekoOverlayType === 'irak' ? '/beko_irak.png' : 
+                '/beko_fildisi.png'
+              } 
+              alt={`Beko ${bekoOverlayType === 'istanbul' ? 'İstanbul' : bekoOverlayType === 'irak' ? 'Irak' : 'Fildişi Sahilleri'}`} 
               className="beko-image" 
             />
             <div className="beko-text">
               {bekoOverlayType === 'istanbul' 
-                ? `TEŞEKKÜRLER ${playerData.playerName} AKŞAM BEŞİKTAŞTA KAHVE?`
-                : `HAY A** ${playerData.playerName}. ÇALIŞMAYA DEVAM..`
+                ? `TEŞEKKÜRLER ${playerData.playerName.toUpperCase()}!! AKŞAM BEŞİKTAŞTA KAHVE?`
+                : bekoOverlayType === 'irak'
+                ? `HAY A**!! ÇALIŞMAYA DEVAM ${playerData.playerName.toUpperCase()}..`
+                : `SALMIYORLAR ${playerData.playerName.toUpperCase()}!! ECO BENİ ARASIN KANKAM`
               }
             </div>
           </div>
