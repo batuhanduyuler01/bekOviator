@@ -153,7 +153,15 @@ void CrashGameServer::joinGame(const Rest::Request& request, Http::ResponseWrite
             response.send(Http::Code::Bad_Request, errorResponse.dump());
             return;
         }
-        
+        std::shared_ptr<Player> _player = nullptr;
+        if (game.get_player_by_name(JsonUtils::getString(requestJson, "name"), _player)) {
+            json errorResponse = JsonUtils::createErrorResponse(
+                "Bu isim zaten kullanılıyor"
+            );
+            response.headers().add<Http::Header::ContentType>(MIME(Application, Json));
+            response.send(Http::Code::Bad_Request, errorResponse.dump());
+            return;
+        }
         // 🎮 Type-safe JSON parsing
         std::string playerId = JsonUtils::getString(requestJson, "player_id");
         std::string name = JsonUtils::getString(requestJson, "name");
@@ -289,8 +297,8 @@ void CrashGameServer::bringBeko(const Rest::Request& request, Http::ResponseWrit
             return;
         }
         double balance = player->get_balance();
-        if (balance <= 3000) {
-            json errorResponse = JsonUtils::createErrorResponse("Bakiye 3000 TL'den fazla olmalı");
+        if (balance <= 2000) {
+            json errorResponse = JsonUtils::createErrorResponse("Bakiye 2000 TL'den fazla olmalı");
             response.headers().add<Http::Header::ContentType>(MIME(Application, Json));
             response.send(Http::Code::Ok, errorResponse.dump());
             return;

@@ -257,9 +257,9 @@ double CrashGame::calculate_crash_point() {
     // House edge %1 ile crash point hesaplama
     double crash_point = 0.99 / random_value;
     
-    // Minimum 1.01x, maksimum 1000x sınırları
+    // Minimum 1.01x, maksimum 10.0x sınırları
     if (crash_point < 1.01) crash_point = 1.01;
-    if (crash_point > 1000.0) crash_point = 1000.0;
+    if (crash_point > 10.0) crash_point = 10.0;
     
     // 2 ondalık basamağa yuvarla
     return std::round(crash_point * 100.0) / 100.0;
@@ -299,7 +299,7 @@ int CrashGame::get_active_bet_count() const {
 void CrashGame::get_current_bets_json(json &resp) const {
     json active_bet_array = json::array();
     for (const auto& bet : this->current_bets) {
-        if (bet.get_status() == BetStatus::ACTIVE) {
+        if (bet.get_status() != BetStatus::CRASHED) {
             json bet_json {};
             bet_json["player_name"] = bet.get_player_name();
             bet_json["amount"] = bet.get_amount();

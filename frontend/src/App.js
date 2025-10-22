@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import { gameAPI } from './gameAPI';
+import ActiveBets from './ActiveBets';
 
 // 🎯 REACT + BACKEND ENTEGRASYONU
 function App() {
@@ -154,7 +155,7 @@ function App() {
       setPlayerData(prev => ({ ...prev, isJoined: true }));
       addNotification(`Oyuna katıldınız! ID: ${gameAPI.getPlayerId()}`, 'success');
     } else {
-      addNotification(result.message || 'Oyuna katılınamadı', 'error');
+      addNotification(result.error || 'Oyuna katılınamadı', 'error');
     }
   };
 
@@ -330,7 +331,7 @@ function App() {
           {playerData.isJoined && (
             <div className="betting-section">
               <h3>💰 Göreve Başla</h3>
-              <h4> Uçak Bileti ✈️ : 3000 TL 💰  </h4>
+              <h4> Uçak Bileti ✈️ : 2000 TL 💰  </h4>
               <div className="player-info">
                 🎮 {playerData.playerName} | ID: {gameAPI.getPlayerId().slice(-4)}
               </div>
@@ -376,7 +377,7 @@ function App() {
                   </div>
                 )}
                 {/* 🇹🇷 BEKOYU GETİR BUTONU */}
-                {playerData.balance > 3000 && (
+                {playerData.balance > 2000 && (
                   <button 
                     className="bring-beko-button"
                     style={{marginTop: '1rem', background: '#2196F3', color: 'white', fontWeight: 'bold', fontSize: '1.1rem', padding: '0.7rem 1.2rem', borderRadius: '8px'}}
@@ -388,6 +389,9 @@ function App() {
               </div>
             </div>
           )}
+
+          {/* Aktif Bahisler - Her zaman göster */}
+          <ActiveBets round={gameState.round} />
 
           {/* Bildirimler */}
           <div className="notifications">

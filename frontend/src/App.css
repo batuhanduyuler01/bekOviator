@@ -626,3 +626,44 @@ body {
   border-radius: 10px;
   border: 2px solid #FFD700;
 }
+
+/* 🎯 AKTİF BAHİSLER */
+.active-bets {
+  background: var(--card-bg);
+  border-radius: 15px;
+  padding: 1.5rem;
+  border: 2px solid var(--border-color);
+  margin-bottom: 1.5rem;
+}
+
+.active-bets h4 {
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.active-bets ul {
+  list-style: none;
+  padding: 0;
+}
+
+.active-bets li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--dark-bg);
+  padding: 0.8rem;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  border-left: 4px solid var(--warning-color);
+}
+
+.active-bets .player-name {
+  font-weight: bold;
+  color: var(--text-light);
+}
+
+.active-bets .bet-amount {
+  color: var(--success-color);
+  font-weight: bold;
+}

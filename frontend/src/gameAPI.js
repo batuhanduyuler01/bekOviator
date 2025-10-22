@@ -19,7 +19,7 @@ class GameAPI {
     }
   }
   constructor() {
-    this.baseURL = '/api';
+    this.baseURL = 'http://localhost:5050/api';
     this.playerId = this.generatePlayerId();
   }
 
@@ -120,6 +120,17 @@ class GameAPI {
   // 🆔 Player ID'yi al
   getPlayerId() {
     return this.playerId;
+  }
+
+  // � GET: Aktif bahisleri al
+  async getActiveBets() {
+    try {
+      const response = await fetch(`${this.baseURL}/game/active-bets`);
+      return await response.json();
+    } catch (error) {
+      console.error('Get active bets error:', error);
+      return [];
+    }
   }
 }
 
