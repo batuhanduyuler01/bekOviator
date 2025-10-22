@@ -434,27 +434,30 @@ body {
 /* BAHİS GİRİŞİ */
 .bet-input-group {
   display: flex;
+  flex-direction: column;
   gap: 0.5rem;
   margin-bottom: 1rem;
 }
 
 .bet-input-group input {
-  flex: 2;
-  padding: 1rem;
+  padding: 1.2rem;
   border: 2px solid var(--border-color);
   border-radius: 8px;
   background: var(--dark-bg);
   color: var(--text-light);
-  font-size: 1rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-align: center;
 }
 
 .bet-input-group input:focus {
   outline: none;
   border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.2);
 }
 
 .bet-button {
-  flex: 1;
+  padding: 1.2rem;
   background: var(--success-color);
   color: white;
   border: none;
@@ -462,6 +465,7 @@ body {
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease;
+  font-size: 1.1rem;
 }
 
 .bet-button:hover:not(:disabled) {
@@ -767,3 +771,48 @@ body {
 .crash-point.green {
   background-color: #4CAF50; /* Yeşil */
 }
+
+/* 🇹🇷 BEKO HEDEF BÖLÜMÜ */
+.beko-goal-section {
+  background: rgba(0, 0, 0, 0.7);
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 2px solid var(--primary-color);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+/* 🇹🇷 BEKO GOAL GÖRSELLERİ */
+.beko-goal-images {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.beko-small-image {
+  height: 45px;
+  width: auto;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.beko-large-image {
+  height: 200px;
+  width: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.plane-emoji {
+  font-size: 2rem;
+  animation: plane-fly 2s ease-in-out infinite;
+}
+
+@keyframes plane-fly {
+  0%, 100% { transform: translateX(0px); }
+  50% { transform: translateX(5px); }
+}
+
+/* 🇹🇷 BEKO FULL EKRAN OVERLAY */

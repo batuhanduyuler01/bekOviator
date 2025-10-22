@@ -286,6 +286,15 @@ function App() {
         </div>
       </header>
 
+      {/* 🇹🇷 BEKO HEDEF GÖRSELLERİ */}
+      <div className="beko-goal-section">
+        <div className="beko-goal-images">
+          <img src="/beko_fildisi.png" alt="Fildişi Sahilleri" className="beko-large-image" />
+          <span className="plane-emoji">✈️</span>
+          <img src="/beko_istanbul.png" alt="İstanbul" className="beko-large-image" />
+        </div>
+      </div>
+
       <main className="game-container">
         {/* Sol taraf - Oyun sahnesi */}
         <section className="game-area">
@@ -375,22 +384,26 @@ function App() {
               <div className="player-info">
                 🎮 {playerData.playerName} | ID: {gameAPI.getPlayerId().slice(-4)}
               </div>
-              <div className="bet-input-group">
+                            <div className="bet-input-group">
                 <input 
-                  type="number" 
-                  placeholder="Bahis miktarı" 
-                  min="1" 
-                  max={playerData.balance}
-                  value={playerData.betAmount}
-                  onChange={(e) => setPlayerData(prev => ({
-                    ...prev, betAmount: parseFloat(e.target.value) || 0
-                  }))}
+                  type="text" 
+                  placeholder="Bahis miktarı (ör: 100)" 
+                  value={playerData.betAmount || ''}
+                  onChange={(e) => {
+                    const input = e.target.value.replace(/[^0-9]/g, ''); // Sadece sayı karakterleri
+                    const value = parseInt(input) || 0;
+                    if (value >= 0 && value <= playerData.balance) {
+                      setPlayerData(prev => ({
+                        ...prev, betAmount: value
+                      }));
+                    }
+                  }}
                   disabled={gameState.phase !== 'waiting' || playerData.currentBet > 0}
                 />
                 <button 
                   className="bet-button" 
                   onClick={handlePlaceBet}
-                  disabled={gameState.phase !== 'waiting' || playerData.currentBet > 0 || playerData.betAmount <= 0}
+                  disabled={gameState.phase !== 'waiting' || playerData.currentBet > 0 || playerData.betAmount <= 0 || playerData.betAmount > playerData.balance}
                 >
                   {playerData.currentBet > 0 ? 'BAHİS YAPILDI' : 'BAHİS YAP'}
                 </button>
