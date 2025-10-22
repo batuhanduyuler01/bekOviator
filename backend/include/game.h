@@ -8,6 +8,7 @@
 #include "json_utils.h"
 #include "player.h"
 #include "bet.h"
+#include "fixed_queue.h"
 
 using json = nlohmann::json;
 
@@ -25,6 +26,7 @@ private:
     GamePhase phase;
     std::chrono::steady_clock::time_point phase_start_time;
     int current_round;
+    FixedQueue<double> old_crash_points{15};
     
     // Test modu için hızlandırma
     bool test_mode;
@@ -76,6 +78,7 @@ public:
     // Oyun durumu JSON
     std::string get_game_state_json() const;
     void get_current_bets_json(json &resp) const;
+    void get_old_crash_points_json(json &resp) const;
     
 private:
     // Crash noktası hesaplama

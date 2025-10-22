@@ -77,6 +77,10 @@ void CrashGameServer::setupRoutes() {
     Routes::Get(router, "/api/game/active-bets", 
         Routes::bind(&CrashGameServer::getActiveBets, this));
 
+    // Get old crash points endpoint
+    Routes::Get(router, "/api/game/old-crash-points", 
+        Routes::bind(&CrashGameServer::getOldCrashPoints, this));
+
     httpEndpoint->setHandler(router.handler());
 }
 
@@ -418,6 +422,30 @@ void CrashGameServer::getActiveBets(const Rest::Request&, Http::ResponseWriter r
             e.what()
         );
 
+        response.headers().add<Http::Header::ContentType>(MIME(Application, Json));
+        response.send(Http::Code::Internal_Server_Error, errorResponse.dump());
+    }
+}
+
+void CrashGameServer::getOldCrashPoints(const Rest::Request&, Http::ResponseWriter response) {
+    enableCors(response);
+    
+    try {
+        // 🎮 Modern JSON serialization ile eski crash noktalarını döndür
+        json oldCrashPoints {};
+        game.get_old_crash_points_json(oldCrashPoints);
+        
+        response.headers().add<Http::Header::ContentType>(MIME(Application, Json));
+        response.send(Http::Code::Ok, oldCrashPoints.dump());
+        
+    } catch (const std::exception& e) {
+        std::cerr << "❌ Old crash points error: " << e.what() << std::endl;
+        
+        json errorResponse = JsonUtils::createErrorResponse(
+            "Eski crash noktaları alınamadı", 
+            e.what()
+        );
+        
         response.headers().add<Http::Header::ContentType>(MIME(Application, Json));
         response.send(Http::Code::Internal_Server_Error, errorResponse.dump());
     }

@@ -35,6 +35,7 @@ void CrashGame::update() {
             update_multiplier();
             if (current_multiplier >= crash_point) {
                 end_game();
+                old_crash_points.push(crash_point);
             }
             break;
             
@@ -308,4 +309,12 @@ void CrashGame::get_current_bets_json(json &resp) const {
         }
     }
     resp = active_bet_array;
+}
+
+void CrashGame::get_old_crash_points_json(json &resp) const {
+    json crash_points_array = json::array();
+    for (const auto& point : this->old_crash_points.buffer_) {
+        crash_points_array.push_back(point);
+    }
+    resp = crash_points_array;
 }
