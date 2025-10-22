@@ -123,6 +123,16 @@ bool CrashGame::add_player(const std::string& player_id, const std::string& name
     return false;
 }
 
+bool CrashGame::get_player_by_name(const std::string& name, std::shared_ptr<Player>& out_player) {
+    for (const auto& pair : players) {
+        if (pair.second->get_name() == name) {
+            out_player = pair.second;
+            return true;
+        }
+    }
+    return false;
+}
+
 std::shared_ptr<Player> CrashGame::get_player(const std::string& player_id) {
     auto it = players.find(player_id);
     return (it != players.end()) ? it->second : nullptr;
@@ -170,6 +180,16 @@ bool CrashGame::cashout(const std::string& player_id) {
         }
     }
     return false;
+}
+
+bool CrashGame::load_balance(const std::string& player_id, double amount) {
+    auto player = get_player(player_id);
+    if (!player) return false;
+    player->add_balance(amount);
+    if (!test_mode) {
+        std::cout << "Oyuncu " << player_id << " bakiyesini yükledi: " << amount << " TL" << std::endl;
+    }
+    return true;
 }
 
 double CrashGame::get_current_multiplier() const {

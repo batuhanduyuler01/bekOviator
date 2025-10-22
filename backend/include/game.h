@@ -48,10 +48,12 @@ public:
     // Oyuncu yönetimi
     bool add_player(const std::string& player_id, const std::string& name);
     std::shared_ptr<Player> get_player(const std::string& player_id);
+    bool get_player_by_name(const std::string& name, std::shared_ptr<Player>& out_player);
     
     // Bahis yönetimi
     bool place_bet(const std::string& player_id, double amount);
     bool cashout(const std::string& player_id);
+    bool load_balance(const std::string& player_id, double amount);
     
     // Getter'lar
     double get_current_multiplier() const;

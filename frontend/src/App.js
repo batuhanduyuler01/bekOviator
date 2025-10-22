@@ -4,6 +4,28 @@ import { gameAPI } from './gameAPI';
 
 // 🎯 REACT + BACKEND ENTEGRASYONU
 function App() {
+    // 🇹🇷 BEKOYU GETİRME FONKSİYONU
+  const handleBringBeko = async () => {
+    const result = await gameAPI.bringBeko();
+    if (result && result.data.ulke) {
+      const ulke = result.data.ulke.toLowerCase();
+      if (ulke === 'türkiye') {
+        addNotification('Oldu! Beko yanımıza döndü.', 'success');
+        setBekoOverlayType('istanbul');
+      } else if (ulke === 'kuzey irak' || ulke === 'fildişi sahilleri') {
+        addNotification(`Hayır! Beko burada çalışmaya başladı: ${result.data.ulke}`, 'error');
+        setBekoOverlayType('irak');
+      } else {
+        addNotification(`Hayır! Beko burada çalışmaya başladı: ${result.data.ulke}`, 'error');
+      }
+      setPlayerData(prev => ({
+        ...prev,
+        balance: 0
+      }));
+    } else {
+      addNotification('Bekoyu getirme işlemi başarısız oldu.', 'error');
+    }
+  };
   // 📦 STATE (Oyun durumu) - Backend'den gelecek veriler
   const [gameState, setGameState] = useState({
     phase: 'waiting',          // 'waiting', 'flying', 'crashed'
@@ -26,6 +48,7 @@ function App() {
   const [notifications, setNotifications] = useState([]);
   const [beerBottles, setBeerBottles] = useState([]); // 🍺 Düşen bira şişeleri
   const [helicopterPosition, setHelicopterPosition] = useState({ left: 10, bottom: 20 }); // 🚁 Helikopter pozisyonu
+  const [bekoOverlayType, setBekoOverlayType] = useState(null); // 🇹🇷 Beko overlay tipi: 'istanbul', 'irak' veya null
 
   // 🔄 BACKEND BAĞLANTISI - Her 100ms'de oyun durumunu güncelle
   useEffect(() => {
@@ -44,6 +67,15 @@ function App() {
           }));
         }
         
+        // Set Player Balance
+        const players_data = await gameAPI.getPlayersInfo();
+        if (players_data.success == true) {
+          setPlayerData(prev => ({
+            ...prev,
+            balance: players_data.data.balance
+          }));
+        }
+   
         // 💥 CRASH DURUMU - Oyun crashedse ve bahisimiz varsa kaybettik
         if (status.phase === 'crashed' && playerData.isInGame && playerData.currentBet > 0) {
           console.log('💥 Oyun crashed! Bahis kaybedildi');
@@ -183,6 +215,25 @@ function App() {
   // 🎨 JSX - HTML benzeri syntax (React'in özel dili)
   return (
     <div className="app">
+      {/* 🇹🇷 BEKO OVERLAY */}
+      {bekoOverlayType && (
+        <div className="beko-overlay" onClick={() => setBekoOverlayType(null)}>
+          <div className="beko-content">
+            <img 
+              src={bekoOverlayType === 'istanbul' ? '/beko_istanbul.png' : '/beko_irak.png'} 
+              alt={`Beko ${bekoOverlayType === 'istanbul' ? 'İstanbul' : 'Irak'}`} 
+              className="beko-image" 
+            />
+            <div className="beko-text">
+              {bekoOverlayType === 'istanbul' 
+                ? `TEŞEKKÜRLER ${playerData.playerName} AKŞAM BEŞİKTAŞTA KAHVE?`
+                : `HAY A** ${playerData.playerName}. ÇALIŞMAYA DEVAM..`
+              }
+            </div>
+          </div>
+        </div>
+      )}
+
       <header className="game-header">
         <h1>✈️ bekOviator</h1>
         <div className="round-info">Round {gameState.round}</div>
@@ -190,7 +241,7 @@ function App() {
           🔗 {gameState ? 'Bağlı' : 'Bağlantı kesik'}
         </div>
         <div style={{marginTop: '0.5rem', fontSize: '1.1rem', color: '#FF9800'}}>
-          Maksimum geliri elde et, bekoyu Türkiye'ye getir!
+          Uçak bileti parasını topla, bekoyu Türkiye'ye getir!
         </div>
       </header>
 
@@ -278,11 +329,11 @@ function App() {
           {/* Bahis paneli */}
           {playerData.isJoined && (
             <div className="betting-section">
-              <h3>💰 Bahis Paneli</h3>
+              <h3>💰 Göreve Başla</h3>
+              <h4> Uçak Bileti ✈️ : 3000 TL 💰  </h4>
               <div className="player-info">
                 🎮 {playerData.playerName} | ID: {gameAPI.getPlayerId().slice(-4)}
               </div>
-              
               <div className="bet-input-group">
                 <input 
                   type="number" 
@@ -323,6 +374,16 @@ function App() {
                       </div>
                     )}
                   </div>
+                )}
+                {/* 🇹🇷 BEKOYU GETİR BUTONU */}
+                {playerData.balance > 3000 && (
+                  <button 
+                    className="bring-beko-button"
+                    style={{marginTop: '1rem', background: '#2196F3', color: 'white', fontWeight: 'bold', fontSize: '1.1rem', padding: '0.7rem 1.2rem', borderRadius: '8px'}}
+                    onClick={handleBringBeko}
+                  >
+                    🇹🇷 Bekoyu Türkiye'ye getir
+                  </button>
                 )}
               </div>
             </div>

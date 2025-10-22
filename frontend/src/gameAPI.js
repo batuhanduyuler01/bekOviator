@@ -1,5 +1,23 @@
 // 🔗 API Service - Backend ile iletişim kurar
 class GameAPI {
+  // 🇹🇷 POST: Bekoyu Türkiye'ye getir
+  async bringBeko() {
+    try {
+      const response = await fetch(`${this.baseURL}/api/game/bring-beko`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          player_id: this.playerId
+        })
+      });
+      return await response.json();
+    } catch (error) {
+      console.error('Bring Beko error:', error);
+      return { success: false, error: error.message };
+    }
+  }
   constructor() {
     this.baseURL = 'http://localhost:8080';
     this.playerId = this.generatePlayerId();
@@ -57,6 +75,25 @@ class GameAPI {
       return await response.json();
     } catch (error) {
       console.error('Place bet error:', error);
+      return { success: false, error: error.message };
+    }
+  }
+
+  // 🚪 GET: Oyuncu bilgilerini al
+  async getPlayersInfo() {
+    try {
+      const response = await fetch(`${this.baseURL}/api/game/players`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          player_id: this.playerId
+        })
+      });
+      return await response.json();
+    } catch (error) {
+      console.error('Get players info error:', error);
       return { success: false, error: error.message };
     }
   }

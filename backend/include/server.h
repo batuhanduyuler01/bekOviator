@@ -26,6 +26,9 @@ private:
     void joinGame(const Rest::Request& request, Http::ResponseWriter response);
     void placeBet(const Rest::Request& request, Http::ResponseWriter response);
     void cashout(const Rest::Request& request, Http::ResponseWriter response);
+    void loadBalance(const Rest::Request& request, Http::ResponseWriter response);
+    void getPlayersInfo(const Rest::Request& request, Http::ResponseWriter response);
+    void bringBeko(const Rest::Request& request, Http::ResponseWriter response);
     void handleOptions(const Rest::Request& request, Http::ResponseWriter response);
     void enableCors(Http::ResponseWriter& response);
     

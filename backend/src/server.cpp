@@ -54,14 +54,32 @@ void CrashGameServer::setupRoutes() {
         Routes::bind(&CrashGameServer::cashout, this));
     Routes::Options(router, "/api/game/cashout", 
         Routes::bind(&CrashGameServer::handleOptions, this));
-    
+
+    // bringBeko endpoint
+    Routes::Post(router, "/api/game/bring-beko", 
+        Routes::bind(&CrashGameServer::bringBeko, this));
+    Routes::Options(router, "/api/game/bring-beko", 
+        Routes::bind(&CrashGameServer::handleOptions, this));
+
+    // Load balance endpoint
+    Routes::Post(router, "/api/game/load-balance", 
+        Routes::bind(&CrashGameServer::loadBalance, this));
+    Routes::Options(router, "/api/game/load-balance", 
+        Routes::bind(&CrashGameServer::handleOptions, this));
+
+    // Get players info endpoint
+    Routes::Put(router, "/api/game/players", 
+        Routes::bind(&CrashGameServer::getPlayersInfo, this));
+    Routes::Options(router, "/api/game/players", 
+        Routes::bind(&CrashGameServer::handleOptions, this));
+
     httpEndpoint->setHandler(router.handler());
 }
 
 void CrashGameServer::enableCors(Http::ResponseWriter& response) {
     response.headers()
         .add<Http::Header::AccessControlAllowOrigin>("*")
-        .add<Http::Header::AccessControlAllowMethods>("GET, POST, OPTIONS")
+        .add<Http::Header::AccessControlAllowMethods>("GET, POST, PUT, OPTIONS")
         .add<Http::Header::AccessControlAllowHeaders>("Content-Type");
 }
 
@@ -252,4 +270,118 @@ void CrashGameServer::cashout(const Rest::Request& request, Http::ResponseWriter
 void CrashGameServer::handleOptions(const Rest::Request&, Http::ResponseWriter response) {
     enableCors(response);
     response.send(Http::Code::Ok, "");
+}
+
+void CrashGameServer::bringBeko(const Rest::Request& request, Http::ResponseWriter response) {
+    enableCors(response);
+    try {
+        json requestJson = JsonUtils::parseRequest(request.body());
+        std::string playerId = JsonUtils::getString(requestJson, "player_id");
+        auto player = game.get_player(playerId);
+        if (!player) {
+            json errorResponse = JsonUtils::createErrorResponse("Oyuncu bulunamadı");
+            response.headers().add<Http::Header::ContentType>(MIME(Application, Json));
+            response.send(Http::Code::Bad_Request, errorResponse.dump());
+            return;
+        }
+        double balance = player->get_balance();
+        if (balance <= 3000) {
+            json errorResponse = JsonUtils::createErrorResponse("Bakiye 3000 TL'den fazla olmalı");
+            response.headers().add<Http::Header::ContentType>(MIME(Application, Json));
+            response.send(Http::Code::Ok, errorResponse.dump());
+            return;
+        }
+        player->deduct_balance(balance);
+        std::vector<std::string> ulkeler = {"türkiye", "kuzey irak", "fildisi sahilleri"};
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<> dis(0, ulkeler.size() - 1);
+        std::string secilen_ulke = ulkeler[dis(gen)];
+        json responseJson = JsonUtils::createSuccessResponse("Ülke seçildi", { {"ulke", secilen_ulke} });
+        response.headers().add<Http::Header::ContentType>(MIME(Application, Json));
+        response.send(Http::Code::Ok, responseJson.dump());
+    } catch (const std::exception& e) {
+        json errorResponse = JsonUtils::createErrorResponse("bringBeko hatası", e.what());
+        response.headers().add<Http::Header::ContentType>(MIME(Application, Json));
+        response.send(Http::Code::Bad_Request, errorResponse.dump());
+    }
+}
+
+void CrashGameServer::loadBalance(const Rest::Request& request, Http::ResponseWriter response) {
+    enableCors(response);
+    
+    try {
+        json requestJson = JsonUtils::parseRequest(request.body());
+        std::string playerName = JsonUtils::getString(requestJson, "player_name");
+        double amount = JsonUtils::getDouble(requestJson, "amount");
+
+        std::cout << "💳 Load balance request: " << playerName << " -> " << amount << " TL" << std::endl;
+        
+        std::shared_ptr<Player> _player =  nullptr;
+        game.get_player_by_name(playerName, _player);
+        if (_player == nullptr) {
+            json errorResponse = JsonUtils::createErrorResponse("Oyuncu bulunamadı", "Geçersiz oyuncu adı");
+            response.headers().add<Http::Header::ContentType>(MIME(Application, Json));
+            response.send(Http::Code::Bad_Request, errorResponse.dump());
+            return;
+        }
+
+        bool success = game.load_balance(_player->get_id(), amount);
+        
+        json responseJson = success ? 
+            JsonUtils::createSuccessResponse("Bakiye başarıyla yüklendi") :
+            JsonUtils::createErrorResponse("Bakiye yüklenemedi", "Geçersiz oyuncu veya miktar");
+        
+        response.headers().add<Http::Header::ContentType>(MIME(Application, Json));
+        response.send(Http::Code::Ok, responseJson.dump());
+        
+    } catch (const std::exception& e) {
+        std::cerr << "❌ Load balance error: " << e.what() << std::endl;
+        
+        json errorResponse = JsonUtils::createErrorResponse(
+            "Bakiye yükleme hatası", 
+            e.what()
+        );
+        
+        response.headers().add<Http::Header::ContentType>(MIME(Application, Json));
+        response.send(Http::Code::Bad_Request, errorResponse.dump());
+    }
+}
+
+void CrashGameServer::getPlayersInfo(const Rest::Request& request, Http::ResponseWriter response) {
+    enableCors(response);
+
+    try {
+        json requestJson = JsonUtils::parseRequest(request.body());
+        std::string playerId = JsonUtils::getString(requestJson, "player_id");
+        auto player = game.get_player(playerId);
+        if (!player) {
+            json errorResponse = JsonUtils::createErrorResponse("Oyuncu bulunamadı");
+            response.headers().add<Http::Header::ContentType>(MIME(Application, Json));
+            response.send(Http::Code::Bad_Request, errorResponse.dump());
+            return;
+        }
+        
+        
+        json playerJson;
+        playerJson["player_id"] = player->get_id();
+        playerJson["name"] = player->get_name();
+        playerJson["balance"] = player->get_balance();
+        
+        json responseJson = JsonUtils::createSuccessResponse("Oyuncu bilgileri alındı", playerJson);
+
+        response.headers().add<Http::Header::ContentType>(MIME(Application, Json));
+        response.send(Http::Code::Ok, responseJson.dump());
+        
+    } catch (const std::exception& e) {
+        std::cerr << "❌ Get players info error: " << e.what() << std::endl;
+        
+        json errorResponse = JsonUtils::createErrorResponse(
+            "Oyuncu bilgileri alınamadı", 
+            e.what()
+        );
+        
+        response.headers().add<Http::Header::ContentType>(MIME(Application, Json));
+        response.send(Http::Code::Bad_Request, errorResponse.dump());
+    }
 }
