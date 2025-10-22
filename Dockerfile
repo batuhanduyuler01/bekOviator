@@ -43,14 +43,17 @@ COPY --from=builder /app/build/crash_server /app/crash_server
 # Copy built frontend files (webpack outputs to 'dist') into nginx html folder
 COPY --from=builder /app/frontend/dist /usr/share/nginx/html
 
+# Copy custom nginx config
+COPY nginx.conf /etc/nginx/nginx.conf
+
 # Copy entrypoint script (added) and make sure backend is executable
 COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh && chmod +x /app/crash_server || true
 
 RUN ldconfig || true
 
-# Expose frontend (80) and backend (5050)
-EXPOSE 80 5050
+# Expose only frontend port (80)
+EXPOSE 80
 
 # Start backend in background and nginx in foreground
 ENTRYPOINT ["/app/entrypoint.sh"]

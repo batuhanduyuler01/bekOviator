@@ -3,7 +3,7 @@ class GameAPI {
   // 🇹🇷 POST: Bekoyu Türkiye'ye getir
   async bringBeko() {
     try {
-      const response = await fetch(`${this.baseURL}/api/game/bring-beko`, {
+      const response = await fetch(`${this.baseURL}/game/bring-beko`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -19,7 +19,7 @@ class GameAPI {
     }
   }
   constructor() {
-    this.baseURL = 'http://localhost:5050';
+    this.baseURL = '/api';
     this.playerId = this.generatePlayerId();
   }
 
@@ -31,7 +31,7 @@ class GameAPI {
   // 📡 GET: Oyun durumunu al
   async getGameStatus() {
     try {
-      const response = await fetch(`${this.baseURL}/api/game/status`);
+      const response = await fetch(`${this.baseURL}/game/status`);
       return await response.json();
     } catch (error) {
       console.error('Game status fetch error:', error);
@@ -42,7 +42,7 @@ class GameAPI {
   // 👤 POST: Oyuna katıl
   async joinGame(playerName) {
     try {
-      const response = await fetch(`${this.baseURL}/api/game/join`, {
+      const response = await fetch(`${this.baseURL}/game/join`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -62,7 +62,7 @@ class GameAPI {
   // 💰 POST: Bahis yap
   async placeBet(amount) {
     try {
-      const response = await fetch(`${this.baseURL}/api/game/bet`, {
+      const response = await fetch(`${this.baseURL}/game/bet`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -82,7 +82,7 @@ class GameAPI {
   // 🚪 GET: Oyuncu bilgilerini al
   async getPlayersInfo() {
     try {
-      const response = await fetch(`${this.baseURL}/api/game/players`, {
+      const response = await fetch(`${this.baseURL}/game/players`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -101,7 +101,7 @@ class GameAPI {
   // 💸 POST: Cashout yap
   async cashout() {
     try {
-      const response = await fetch(`${this.baseURL}/api/game/cashout`, {
+      const response = await fetch(`${this.baseURL}/game/cashout`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
