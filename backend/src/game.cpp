@@ -151,13 +151,13 @@ bool CrashGame::place_bet(const std::string& player_id, double amount) {
     
     if (phase == GamePhase::WAITING) {
         // Mevcut round için bahis
-        current_bets.emplace_back(player_id, amount, current_round);
+        current_bets.emplace_back(player_id, amount, current_round, player->get_name());
         if (!test_mode) {
             std::cout << "Oyuncu " << player_id << " mevcut round için bahis yaptı: " << amount << " TL" << std::endl;
         }
     } else {
         // Bir sonraki round için bahis
-        next_round_bets.emplace_back(player_id, amount, current_round + 1);
+        next_round_bets.emplace_back(player_id, amount, current_round + 1, player->get_name());
         if (!test_mode) {
             std::cout << "Oyuncu " << player_id << " bir sonraki round için bahis yaptı: " << amount << " TL" << std::endl;
         }
@@ -294,4 +294,18 @@ double CrashGame::get_multiplier() const {
 
 int CrashGame::get_active_bet_count() const {
     return static_cast<int>(current_bets.size());
+}
+
+void CrashGame::get_current_bets_json(json &resp) const {
+    json active_bet_array = json::array();
+    for (const auto& bet : this->current_bets) {
+        if (bet.get_status() == BetStatus::ACTIVE) {
+            json bet_json {};
+            bet_json["player_name"] = bet.get_player_name();
+            bet_json["amount"] = bet.get_amount();
+
+            active_bet_array.push_back(bet_json);
+        }
+    }
+    resp = active_bet_array;
 }

@@ -73,6 +73,10 @@ void CrashGameServer::setupRoutes() {
     Routes::Options(router, "/api/game/players", 
         Routes::bind(&CrashGameServer::handleOptions, this));
 
+    // Get active bets endpoint
+    Routes::Get(router, "/api/game/active-bets", 
+        Routes::bind(&CrashGameServer::getActiveBets, this));
+
     httpEndpoint->setHandler(router.handler());
 }
 
@@ -383,5 +387,30 @@ void CrashGameServer::getPlayersInfo(const Rest::Request& request, Http::Respons
         
         response.headers().add<Http::Header::ContentType>(MIME(Application, Json));
         response.send(Http::Code::Bad_Request, errorResponse.dump());
+    }
+}
+
+void CrashGameServer::getActiveBets(const Rest::Request&, Http::ResponseWriter response) {
+    enableCors(response);
+    
+    try {
+        // 🎮 Modern JSON serialization ile aktif bahisleri döndür
+
+        json activeBets {};
+        game.get_current_bets_json(activeBets);
+
+        response.headers().add<Http::Header::ContentType>(MIME(Application, Json));
+        response.send(Http::Code::Ok, activeBets.dump());
+
+    } catch (const std::exception& e) {
+        std::cerr << "❌ Game status error: " << e.what() << std::endl;
+
+        json errorResponse = JsonUtils::createErrorResponse(
+            "Oyun durumu alınamadı",
+            e.what()
+        );
+
+        response.headers().add<Http::Header::ContentType>(MIME(Application, Json));
+        response.send(Http::Code::Internal_Server_Error, errorResponse.dump());
     }
 }

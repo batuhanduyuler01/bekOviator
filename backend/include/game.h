@@ -5,8 +5,11 @@
 #include <vector>
 #include <map>
 #include <memory>
+#include "json_utils.h"
 #include "player.h"
 #include "bet.h"
+
+using json = nlohmann::json;
 
 enum class GamePhase {
     WAITING,     // Oyuncuların bahis yapması için bekleme
@@ -72,6 +75,7 @@ public:
     
     // Oyun durumu JSON
     std::string get_game_state_json() const;
+    void get_current_bets_json(json &resp) const;
     
 private:
     // Crash noktası hesaplama

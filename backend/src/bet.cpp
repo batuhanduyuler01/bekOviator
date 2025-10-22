@@ -5,8 +5,17 @@ Bet::Bet(const std::string& p_id, double bet_amount, int round)
       status(BetStatus::ACTIVE), game_round(round) {
 }
 
+Bet::Bet(const std::string& p_id, double bet_amount, int round,const std::string& p_name)
+    : player_id(p_id), amount(bet_amount), cashout_multiplier(0.0),
+        status(BetStatus::ACTIVE), game_round(round), player_name(p_name) {
+}
+
 std::string Bet::get_player_id() const {
     return player_id;
+}
+
+std::string Bet::get_player_name() const {
+    return player_name;
 }
 
 double Bet::get_amount() const {

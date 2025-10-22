@@ -31,6 +31,7 @@ private:
     void bringBeko(const Rest::Request& request, Http::ResponseWriter response);
     void handleOptions(const Rest::Request& request, Http::ResponseWriter response);
     void enableCors(Http::ResponseWriter& response);
+    void getActiveBets(const Rest::Request& request, Http::ResponseWriter response);
     
 public:
     CrashGameServer(Address address);
